@@ -1,5 +1,6 @@
 # battleSchool
 > The essence of training is to allow error without consequence. 
+
 *Orson Scott Card, "Ender's Game"*
 
 ## Table of Contents
