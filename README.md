@@ -20,6 +20,10 @@ The purpose of Battle School is to provide three main functionalities:
 
 ## Helpful Links
 
++ [A Guide on Combining Terraform and Ansible for AWS](https://github.com/ernesen/Terraform-Ansible)
+
++ [More General Terraform-Ansible Blog Post](https://alex.dzyoba.com/blog/terraform-ansible/)
+
 + [`clong`'s DetectionLab](https://github.com/clong/DetectionLab)
 
 + [Terraform Examples on GitHub](https://github.com/hashicorp/terraform/tree/master/examples)
