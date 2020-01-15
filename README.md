@@ -22,6 +22,8 @@ The purpose of Battle School is to provide three main functionalities:
 
 + [VSphere Docs from VMware](https://docs.vmware.com/en/VMware-vSphere/index.html)
 
++ [VCSA CLI Deployment Instructions](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/products/vsphere/vmware-vsphere-60-vcenter-server-appliance-cmdline-install-technical-note.pdf)
+
 ## Lessons Learned
 ###### Or: The Wall of Shame
 + VCenter is incompatible with ESXi hosts that are of a higher version than it.
