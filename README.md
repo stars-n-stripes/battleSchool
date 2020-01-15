@@ -22,6 +22,8 @@ The purpose of Battle School is to provide three main functionalities:
 
 + [`clong`'s DetectionLab](https://github.com/clong/DetectionLab)
 
++ [Terraform Examples on GitHub](https://github.com/hashicorp/terraform/tree/master/examples)
+
 + [The HTML5 Fling for VSphere](https://download3.vmware.com/software/vmw-tools/vsphere_html_client/H5%20Client%20Deployment%20Instructions%20and%20Helpful%20Tips_v28.pdf)
 
 + [ESXi WebClient Installation Instructions](https://calvin.me/web-interface-for-esxi-without-vcenter/)
