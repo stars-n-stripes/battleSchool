@@ -42,6 +42,8 @@ The purpose of Battle School is to provide three main functionalities:
 
 + [VA Cyber Range Purpose Statement](https://csrc.nist.gov/CSRC/media/Events/Federal-Information-Systems-Security-Educators-As/documents/24.pdf)
 
++ [OVA/F Deploy Example Using GOVC](https://giedrius.blog/2018/04/23/terraform-vsphere-provider-1-x-now-supports-deploying-ova-files-makes-using-ovftool-on-esxi-hosts-obsolete/)
+
 ## Lessons Learned
 ###### Or: The Wall of Shame
 + VCenter is incompatible with ESXi hosts that are of a higher version than it.
