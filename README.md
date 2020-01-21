@@ -26,7 +26,9 @@ The purpose of Battle School is to provide three main functionalities:
 
 + [`clong`'s DetectionLab](https://github.com/clong/DetectionLab)
 
-+ [Terraform Examples on GitHub](https://github.com/hashicorp/terraform/tree/master/examples)
++ [Terraform VSphere Examples](https://github.com/terraform-providers/terraform-provider-vsphere/tree/master/examples)
+
++ [ALL Terraform Examples on GitHub](https://github.com/hashicorp/terraform/tree/master/examples)
 
 + [The HTML5 Fling for VSphere](https://download3.vmware.com/software/vmw-tools/vsphere_html_client/H5%20Client%20Deployment%20Instructions%20and%20Helpful%20Tips_v28.pdf)
 
@@ -39,6 +41,8 @@ The purpose of Battle School is to provide three main functionalities:
 + [VCSA CLI Deployment Instructions](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/products/vsphere/vmware-vsphere-60-vcenter-server-appliance-cmdline-install-technical-note.pdf)
 
 + [VA Cyber Range Purpose Statement](https://csrc.nist.gov/CSRC/media/Events/Federal-Information-Systems-Security-Educators-As/documents/24.pdf)
+
++ [OVA/F Deploy Example Using GOVC](https://giedrius.blog/2018/04/23/terraform-vsphere-provider-1-x-now-supports-deploying-ova-files-makes-using-ovftool-on-esxi-hosts-obsolete/)
 
 ## Lessons Learned
 ###### Or: The Wall of Shame
