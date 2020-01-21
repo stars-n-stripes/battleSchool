@@ -8,7 +8,7 @@ provider "vsphere" {
 }
 
 data "vsphere_datacenter" "dc" {
-  name = "datacenter"
+  name = "dc0"
 }
 
 data "vsphere_datastore" "datastore" {
@@ -22,7 +22,7 @@ data "vsphere_resource_pool" "pool" {
 }
 
 data "vsphere_network" "network" {
-  name          = "public"
+  name          = "VM Network"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
