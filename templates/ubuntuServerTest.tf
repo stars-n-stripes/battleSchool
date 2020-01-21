@@ -40,8 +40,8 @@ resource "vsphere_virtual_machine" "vm" {
   datastore_id     = data.vsphere_datastore.datastore.id
   wait_for_guest_net_routable = false
   wait_for_guest_net_timeout = 0
-  num_cpus = 2
-  memory   = 1024
+  num_cpus = 4
+  memory   = 4096
   guest_id = data.vsphere_virtual_machine.template.guest_id
   cdrom {
     client_device=true
