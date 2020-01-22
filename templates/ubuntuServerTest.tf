@@ -24,7 +24,7 @@ data "vsphere_resource_pool" "pool" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-data "vsphere_network" "network" {
+data "vsphere_external_network" "network" {
   name          = "VM Network"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
@@ -40,18 +40,31 @@ resource "vsphere_virtual_machine" "vm" {
   datastore_id     = data.vsphere_datastore.datastore.id
   wait_for_guest_net_routable = false
   wait_for_guest_net_timeout = 0
+  
+  # Slightly swole for routing
   num_cpus = 4
   memory   = 4096
+  
+  # Editing vApp properties for this OVA requires a loaded CDROM with client_device=true
   guest_id = data.vsphere_virtual_machine.template.guest_id
   cdrom {
     client_device=true
   }
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
 
+
+  # External network interface
   network_interface {
-    network_id   = data.vsphere_network.network.id
+    network_id   = data.vsphere_external_network.network.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
+  
+  # Internal network interface
+  network_interface {
+    network_id   = data.vsphere_internal_network.network.id
+    adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+  }
+  
 
   disk {
   # Differs from the guide in that newer versions of Terraform require the key to be 'label' and the value to end in '.vmdk'
@@ -68,7 +81,7 @@ resource "vsphere_virtual_machine" "vm" {
   vapp {
     properties = {
       "hostname"                        = "ubuntuServertest"
-      "password"     = "ubuntutest"
+      "password"                        = "ubuntutest"
 	  "public-keys"                     =""
 
     }
