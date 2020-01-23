@@ -30,7 +30,7 @@ resource "vsphere_host_port_group" "pg"{
 data "vsphere_network" "internal" {
   count = local.num_teams
   datacenter_id = data.vsphere_datacenter.dc.id
-  name = vsphere_host_port_group.pg[count.index]
+  name = vsphere_host_port_group.pg[count.index].name
 }
 
 resource "vsphere_virtual_machine" "vm" {
