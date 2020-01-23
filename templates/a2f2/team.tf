@@ -79,6 +79,7 @@ resource "vsphere_virtual_machine" "vm" {
     template_uuid = data.vsphere_virtual_machine.template.id
   }
 
+  #TODO: Add static IPs to both networks.
   vapp {
     properties = {
       "hostname"                        = format("team%d_router", count.index)
