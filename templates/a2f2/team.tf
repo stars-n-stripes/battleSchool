@@ -11,7 +11,7 @@ resource "vsphere_host_virtual_switch" "internal_network" {
   count = local.num_teams
   active_nics = []
   host_system_id = data.vsphere_host.esxi_host.id
-  name = "team" + tostring(count.index) + "_internal"
+  name = format("team%d_internal", count.index)
   network_adapters = []
   standby_nics = []
 
@@ -20,7 +20,7 @@ resource "vsphere_host_virtual_switch" "internal_network" {
 resource "vsphere_virtual_machine" "vm" {
 
   count =  local.num_teams
-  name             = "router" + tostring(count.index)
+  name             = format("team%d_router", count.index)
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   wait_for_guest_net_routable = false
@@ -66,7 +66,7 @@ resource "vsphere_virtual_machine" "vm" {
 
   vapp {
     properties = {
-      "hostname"                        = "team" + tostring(count.index)  + "rtr"
+      "hostname"                        = format("team%d_router", count.index)
       "password"                        = "ubuntutest"
       "public-keys"                     = ""
 
