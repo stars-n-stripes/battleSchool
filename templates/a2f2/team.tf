@@ -25,7 +25,13 @@ resource "vsphere_host_port_group" "pg"{
   virtual_switch_name = vsphere_host_virtual_switch.internal_switch[count.index].name
 
 }
- 
+
+# Create network data from these port groups.
+data "vsphere_network" "internal" {
+  count = local.num_teams
+  datacenter_id = data.vsphere_datacenter.dc.id
+  name = vsphere_host_port_group.pg[count.index]
+}
 
 resource "vsphere_virtual_machine" "vm" {
   count =  local.num_teams
@@ -56,7 +62,7 @@ resource "vsphere_virtual_machine" "vm" {
   # Internal network interface
   network_interface {
     # Use only the specific internal network we created for this
-    network_id   = vsphere_host_port_group.pg[count.index].id
+    network_id   = data.vsphere_network.internal[count.index].id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
 
