@@ -20,7 +20,7 @@ data "vsphere_network" "network" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-data "vsphere_external_network" "network" {
+data "vsphere_network" "external_network" {
   name          = "VM Network"
   datacenter_id = data.vsphere_datacenter.dc.id
 }

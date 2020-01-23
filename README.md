@@ -50,3 +50,7 @@ The purpose of Battle School is to provide three main functionalities:
 + VMWare publishes specific ISOs for manufacturers.
 + Anything before 6.5 is going to use flash as a default.
 + ChromeOS hates flash.
++ When creating variables, make sure to add a `{}` even if there's nothing to add.
++ Terraform doesn't do string concactenation by default. You need to use the built-in function `format()`
++ Terraform doesn't do global variables by default. Or by choice. Or ever.
++ The "network" that vm resource interfaces need an id for is actually the port group, not the id of a switch

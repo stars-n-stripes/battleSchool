@@ -6,19 +6,28 @@ locals {
   num_teams = 2
 }
 
-# Create an internal network for the team
-resource "vsphere_host_virtual_switch" "internal_network" {
+# Create an internal switch for the teams
+resource "vsphere_host_virtual_switch" "internal_switch" {
   count = local.num_teams
   active_nics = []
   host_system_id = data.vsphere_host.esxi_host.id
-  name = format("team%d_internal", count.index)
+  name = format("team%d_switch", count.index)
   network_adapters = []
   standby_nics = []
 
 }
 
-resource "vsphere_virtual_machine" "vm" {
+# Create a port group for each team
+resource "vsphere_host_port_group" "pg"{
+  count = local.num_teams
+  name = format("team%d_internal", count.index)
+  host_system_id = data.vsphere_host.esxi_host.id
+  virtual_switch_name = vsphere_host_virtual_switch.internal_switch[count.index].name
 
+}
+ 
+
+resource "vsphere_virtual_machine" "vm" {
   count =  local.num_teams
   name             = format("team%d_router", count.index)
   resource_pool_id = data.vsphere_resource_pool.pool.id
@@ -40,14 +49,14 @@ resource "vsphere_virtual_machine" "vm" {
 
   # External network interface
   network_interface {
-    network_id   = data.vsphere_external_network.network.id
+    network_id   = data.vsphere_network.external_network.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
 
   # Internal network interface
   network_interface {
     # Use only the specific internal network we created for this
-    network_id   = vsphere_host_virtual_switch.internal_network[count].id
+    network_id   = vsphere_host_port_group.pg[count.index].id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
 
