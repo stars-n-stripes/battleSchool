@@ -30,3 +30,8 @@ data "vsphere_virtual_machine" "template" {
   name          = "ubuntu_server_template"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
+
+data "vsphere_host" "esxi_host"{
+  name = "10.0.0.161"
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
