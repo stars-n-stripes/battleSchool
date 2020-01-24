@@ -26,12 +26,14 @@ resource "vsphere_host_port_group" "pg"{
 
 }
 
-# Create network data from these port groups.
+# Pull the resultant network data from this port groups.
 data "vsphere_network" "internal" {
   count = local.num_teams
   datacenter_id = data.vsphere_datacenter.dc.id
   name = vsphere_host_port_group.pg[count.index].name
 }
+
+# TODO: Build a pfSense router
 
 resource "vsphere_virtual_machine" "vm" {
   count =  local.num_teams
@@ -77,9 +79,25 @@ resource "vsphere_virtual_machine" "vm" {
 
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
-  }
 
-  #TODO: Add static IPs to both networks.
+    customize {
+      # External network interface
+      # Follows the order of network_interface declarations in the vm block
+      network_interface {
+        # TODO: Replace with an internal NAT space OR the IPs that Mr. Harris gives you
+        ipv4_address = "10.0.0.${count.index + 164}"
+        ipv4_netmask = 24
+      }
+
+      # Internal network interface
+      network_interface {
+        ipv4_address = "172.18.${count.index + 2}.1"
+        ipv4_netmask = 16
+      }
+
+    }
+  }
+  # TODO: Merge vapp properties into the customize block
   vapp {
     properties = {
       "hostname"                        = format("team%d_router", count.index)
@@ -88,5 +106,6 @@ resource "vsphere_virtual_machine" "vm" {
 
     }
   }
+  custom_attributes {}
 }
 
