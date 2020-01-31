@@ -13,7 +13,7 @@ data "vsphere_resource_pool" "pool" {
 }
 
 # Default external network is the "VM Network" that ships with ESXi
-# This will also be the default "vsphere_network" for ease of use w/ templates
+# This will also be the default "vsphere_network" for ease of use w/ environments
 
 data "vsphere_network" "network" {
   name          = "VM Network"

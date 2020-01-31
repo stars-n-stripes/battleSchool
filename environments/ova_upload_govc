@@ -1,0 +1,3 @@
+GOVC_URL='user:pass@vspherehost' govc import.ova -ds=ds0 -host="10.0.0.161" -pool=battleSchool -name=template_from_ovf [path_to_ova]
+GOVC_URL='user:pass@host' govc vm.markastemplate template_from_ovf
+
