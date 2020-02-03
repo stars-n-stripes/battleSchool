@@ -26,8 +26,13 @@ data "vsphere_network" "external_network" {
 }
 
 # The default template for our machines will be Ubuntu Server (Bionic LTS)
-data "vsphere_virtual_machine" "template" {
-  name          = "ubuntu_server_template"
+data "vsphere_virtual_machine" "kali_template" {
+  name          = "cs110_kali_template"
+  datacenter_id = data.vsphere_datacenter.dc.id
+}
+
+data "vsphere_virtual_machine" "windows_template" {
+  name          = "cs110_windows_template"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 

@@ -26,7 +26,7 @@ resource "vsphere_host_port_group" "pg"{
 
 }
 
-# Pull the resultant network data from this port groups.
+# Pull the resultant network data from this port group.
 data "vsphere_network" "internal" {
   count = local.num_teams
   datacenter_id = data.vsphere_datacenter.dc.id
