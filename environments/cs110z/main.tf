@@ -1,5 +1,8 @@
 locals {
-  num_environments = 12
+  # How many vuln-attacker pairs do we want per class
+  # num_environments = 12
+  num_environments = 2 # test case
+  # How many classes are we building for
   num_classes = 1
 }
 
@@ -10,6 +13,7 @@ locals {
 resource "vsphere_host_virtual_switch" "demo_switch" {
   # We're making one of these for each class that has demos at once
   # count = local.num_classes
+  count = 1
   active_nics = ["vmnic0"]
   host_system_id = data.vsphere_host.esxi_host.id
   name = format("cs110_demo_switch", count.index)
@@ -22,6 +26,7 @@ resource "vsphere_host_virtual_switch" "demo_switch" {
 # Create a port group for each team
 resource "vsphere_host_port_group" "demo_pg" {
   # count = local.num_classes
+  count = 1
   name = format("cs110%d_internal", count.index)
   host_system_id = data.vsphere_host.esxi_host.id
   # virtual_switch_name = vsphere_host_virtual_switch.demo_switch[count.index].name
