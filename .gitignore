@@ -30,3 +30,6 @@ override.tf.json
 
 # IDE files
 .idea/*
+
+# Virtual Environment
+venv/*
