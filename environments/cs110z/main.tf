@@ -16,7 +16,7 @@ resource "vsphere_host_virtual_switch" "demo_switch" {
   count = 1
   active_nics = ["vmnic0"]
   host_system_id = data.vsphere_host.esxi_host.id
-  name = format("cs110_demo_switch", count.index)
+  name = format("cs110_demo_switch_%d", count.index)
   # we actually want this to link to an external network
   network_adapters = ["vmnic0"]
   standby_nics = []
@@ -74,6 +74,8 @@ resource "vsphere_virtual_machine" "vulnbox" {
   }
 
   clone {
+    # TODO: Get a Windows VM up and running with IceCast101619
+
     template_uuid = data.vsphere_virtual_machine.windows_template.id
 
     customize {
