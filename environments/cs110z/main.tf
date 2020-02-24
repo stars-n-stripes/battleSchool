@@ -74,7 +74,6 @@ resource "vsphere_virtual_machine" "vulnbox" {
   }
 
   clone {
-    # TODO: Get a Windows VM up and running with IceCast101619
 
     template_uuid = data.vsphere_virtual_machine.windows_template.id
 
@@ -95,9 +94,6 @@ resource "vsphere_virtual_machine" "vulnbox" {
   vapp {
     properties = {
       "hostname"                        = format("cs110_vulnbox%d", count.index)
-      "password"                        = "ubuntutest"
-      "public-keys"                     = ""
-
     }
   }
   custom_attributes {}
