@@ -32,7 +32,7 @@ data "vsphere_virtual_machine" "kali_template" {
 }
 
 data "vsphere_virtual_machine" "windows_template" {
-  name          = "cs110_windows_template"
+  name          = "cs110_icecast_template"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
