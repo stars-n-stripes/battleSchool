@@ -1,3 +1,9 @@
+import os
+import cmd
+import paramiko
+import azure110
+from pyfiglet import figlet_format
+
 """
 session.py
 Author: James Lynch
@@ -8,3 +14,25 @@ Purpose: This program will accomplish the following tasks:
 """
 
 
+def main():
+
+    # Verify requisite environment variables are set
+    ssh_server_listen()
+
+    clone_container()
+
+    try:
+
+        build_vulnbox()
+
+        cam_demo()
+
+        destroy_vulnbox()
+
+    except Exception:
+        destroy_vulnbox()
+        raise Exception
+
+
+if __name__ == "__main__":
+    main()
