@@ -1,7 +1,7 @@
 import os
 import cmd
-import paramiko
 import azure110
+import ssh110
 from pyfiglet import figlet_format
 
 """
