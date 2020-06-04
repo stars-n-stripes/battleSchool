@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Located for now at https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/build.sh
+
 # This script should be (initially) run as root, though it will su to dev rather quickly
 if [ "$USER" != "root"]
 then 
@@ -52,7 +54,7 @@ apt install -yqq virtualbox
 
 # Pull a custom xrdp config that kicks the "student" user to the kali VM (once it's up) (Uncomment for manual)
 echo "[+] Downloading and applying xrdp settings. . ."
-wget SOMEWHERE -O /etc/xrdp/startwm.sh
+wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/startwm.sh -O /etc/xrdp/startwm.sh
 # TODO: Also pull down xrdp.ini with custom login screen
 # In the Vagrant version of this script, this is done in the Vagrantfile
 
@@ -78,7 +80,7 @@ apt install -yqq vagrant
 # get the Vagrant file for this scenario
 # Remember to set explicit port forwarding for the kali box ssh so we can know which port to forward via X11
 echo "[+] Downloading scenario Vagrantfile. . ."
-wget SOMEWHERE -O tmp/Vagrantfile
+wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/Vagrantfile -O tmp/Vagrantfile
 
 # Vagrant setup
 echo "[+] Creating scenario in the context of the dev user. . ."
