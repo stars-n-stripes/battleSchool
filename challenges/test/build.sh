@@ -89,8 +89,10 @@ wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/chall
 # Vagrant setup
 echo "[+] Creating scenario in the context of the dev user. . ."
 mkdir /scenario
+mv /tmp/Vagrantfile /scenario
+chown dev:dev /scenario/Vagrantfile
 chown dev:dev /scenario
-su dev -c "cd /scenario && vagrant init && mv /tmp/Vagrantfile . && vagrant up"
+su dev -c "cd /scenario && vagrant init && vagrant up"
 
 # alter the kali vm with vboxmanage to force it to be fullscreen all the time
 # VBoxManage setextradata "<vm>" "GUI/Fullscreen" true
