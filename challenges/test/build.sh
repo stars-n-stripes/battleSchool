@@ -3,14 +3,14 @@
 # Located for now at https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/build.sh
 
 # This script should be (initially) run as root, though it will su to dev rather quickly
-if [ "$USER" != "root"]
+if [[ "$USER" != "root" ]]
 then 
 	echo "For developer user setup, please run this script as root or with sudo"
 	exit
 fi
 
 # Input validation
-if [ -z $1 || -z $2 ]
+if [[ -z $1 || -z $2 ]]
 then 
 	echo "Usage: [sudo] $0 <dev password> <student password>"
 	exit
