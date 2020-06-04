@@ -36,12 +36,12 @@ apt update -yqq > /dev/null
 # gdm3 is installed by default on Ubuntu Server, but XFCE is a lighter alternative
 echo "[+] Removing gdm3 and installing lightdm. . ."
 apt remove -yqq gdm3 --purge
-apt install -yqq lightdm lightdm-slick-greeter
+apt install -yqq lightdm lightdm-slick-greeter > /dev/null
 sed -i 's:/usr/sbin/gdm3:/usr/sbin/lightdm:'
 
 echo "[+] Installing XFCE desktop environment. . ."
 # This download is over a gig, so it's slightly more verbose
-apt install -yq xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils rdesktop xfce4-terminal
+apt install -yq xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils rdesktop xfce4-terminal > /dev/null
 
 # Install the RDP server and associate the new xrdp user with the ssl-cert group
 # https://askubuntu.com/questions/592537/can-i-access-ubuntu-from-windows-remotely/592544#592544
