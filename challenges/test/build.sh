@@ -81,7 +81,7 @@ apt install -yqq vagrant
 # get the Vagrant file for this scenario
 # Remember to set explicit port forwarding for the kali box ssh so we can know which port to forward via X11
 echo "[+] Downloading scenario Vagrantfile. . ."
-wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/Vagrantfile -O tmp/Vagrantfile
+wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/Vagrantfile -O /tmp/Vagrantfile
 
 # Vagrant setup
 echo "[+] Creating scenario in the context of the dev user. . ."
