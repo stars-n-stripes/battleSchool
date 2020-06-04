@@ -22,8 +22,11 @@ echo "Author: delogrand/starsnstripes"
 # This will help appease apt
 export DEBIAN_FRONTEND=noninteractive
 
+echo "[+] Installing mkpasswd. . ."
+apt install -yqq whois
+
 echo "[+] Creating developer user (dev). . ."
-dev_hash="$(openssl passwd $1)" 
+dev_hash="$(mkpasswd -m sha512crypt $1)" 
 useradd dev -p $dev_hash -m -s /bin/bash
 usermod -aG sudo dev
 
@@ -102,7 +105,7 @@ su dev -c "cd /scenario && vagrant init && mv /tmp/Vagrantfile . && vagrant up"
 # -m ensures the creation of a home directory
 # The student password is USAFACyberRange
 echo "[+] Adding student user with password $1. . ."
-password_hash="$(openssl passwd $2)" 
+password_hash="$(mkpasswd -m sha512crypt $2)" 
 useradd student -p $password_hash -M -s /usr/sbin/nologin
 # Setting the user's shell to nologin will still allow them to authenticate via RDP and thus participate in the lab
 # It'll just (hopefully) give them more of a headache if they somehow find a way to escape the SSH session
