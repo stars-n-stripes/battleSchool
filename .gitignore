@@ -33,3 +33,6 @@ override.tf.json
 
 # Virtual Environment
 venv/*
+
+# Vagrant-related files
+**/.vagrant/*

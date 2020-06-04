@@ -10,6 +10,7 @@ apt update &> /dev/null
 apt install -y apache2 &> /dev/null
 
 # Discard the current/default contents of /var/www and link /vagrant to that location
-# This means whatever shares a directory with the vagrantfile on the host side will be what's on the webserver
+# This means whatever shares a directory with the "html" folder in the project directory
+# on the host side will be what's on the webserver
 rm -rf /var/www
 ln -fs /vagrant /var/www
