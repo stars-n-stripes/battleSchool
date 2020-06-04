@@ -27,7 +27,7 @@ dev_hash="$(openssl passwd $1)"
 useradd dev -p $dev_hash -m -s /bin/bash
 usermod -aG sudo dev
 
-apt update
+apt update -yqq
 
 # Install XFCE 
 # gdm3 is installed by default on Ubuntu Server, but XFCE is a lighter alternative
@@ -37,7 +37,8 @@ apt install -yqq lightdm lightdm-slick-greeter
 sed -i 's:/usr/sbin/gdm3:/usr/sbin/lightdm:'
 
 echo "[+] Installing XFCE desktop environment. . ."
-apt install -yqq xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils rdesktop xfce4-terminal
+# This download is over a gig, so it's slightly more verbose
+apt install -yq xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils rdesktop xfce4-terminal
 
 # Install the RDP server and associate the new xrdp user with the ssl-cert group
 # https://askubuntu.com/questions/592537/can-i-access-ubuntu-from-windows-remotely/592544#592544
@@ -117,7 +118,7 @@ chown student:student /scenario/.vagrant/machines/kali/virtualbox/private_key
 # https://askubuntu.com/questions/58575/add-lines-to-cron-from-script
 # To prevent confusion between vagrant deploy and running this as dev, run in current user context
 echo '[+] Adding "vagrant up" command to crontab for dev. . .'
-(crontab -u $USER -l; echo "@reboot cd /scenario && vagrant up" ) | crontab -u $USER -
+su dev -c '(crontab -u $USER -l; echo "@reboot cd /scenario && vagrant up" ) | crontab -u $USER -'
 
 # Get rid of the colord error - This needs to be run on the KALI vagrant box
 # sed -i /usr/share/polkit-1/actions/org.freedesktop.color.policy -e 's/<allow_inactive>no<\/allow_inactive>/<allow_inactive>yes<\/allow_inactive>/gm'
