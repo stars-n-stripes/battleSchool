@@ -30,7 +30,7 @@ dev_hash="$(mkpasswd -m sha512crypt $1)"
 useradd dev -p $dev_hash -m -s /bin/bash
 usermod -aG sudo dev
 
-apt update -yqq
+apt update -yqq > /dev/null
 
 # Install XFCE 
 # gdm3 is installed by default on Ubuntu Server, but XFCE is a lighter alternative
@@ -46,13 +46,13 @@ apt install -yq xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils rdesktop xfc
 # Install the RDP server and associate the new xrdp user with the ssl-cert group
 # https://askubuntu.com/questions/592537/can-i-access-ubuntu-from-windows-remotely/592544#592544
 echo "[+] Installing xrdp and adding xrdp user to ssl-cert group. . ."
-apt install -yqq xrdp
+apt install -yqq xrdp > /dev/null
 adduser xrdp ssl-cert  
 
 
 # Install virtualization software (vbox now, TODO is to move to KVM)
 echo "[+] Installing virtualbox. . ."
-apt install -yqq virtualbox
+apt install -yqq virtualbox > /dev/null
 # apt install -yqq qemu-kvm qemu virt-manager
 # Note: for running qemu vms, make sure to add the option "-usbdevice tablet" to ensure accurate mouse mvmnt
 
@@ -79,7 +79,7 @@ echo "xfce4-session" > /home/dev/.xsession
 # Install vagrant
 # TODO: Store the packages online somewhere so this system doesn't fall victim to an update
 echo "[+] Installing vagrant. . ."
-apt install -yqq vagrant
+apt install -yqq vagrant > /dev/null
 
 # get the Vagrant file for this scenario
 # Remember to set explicit port forwarding for the kali box ssh so we can know which port to forward via X11
