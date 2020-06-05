@@ -15,4 +15,4 @@ to download the file. You need to provide two passwords (one for the developer, 
 The **Vagrantfile** contains information on the scenario, as well as the parameters for the student attacker box.
 
 ##### Usage
-`./build.sh <dev password> <student password>
+`./build.sh <dev password> <student password>`
