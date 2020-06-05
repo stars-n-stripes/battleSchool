@@ -32,7 +32,7 @@ if test "$USER" = "student"; then
 	# TODO: Provide some sort of verification that the VM is up and running.
 	echo "Starting student X session via SSH" >> /tmp/xrdp-student.log
 	echo "DISPLAY: $DISPLAY" >> /tmp/xrdp-student.log
-	ssh vagrant@127.0.0.1 -o "StrictHostKeyChecking=false" -p 8507 -i /data/vtest/.vagrant/machines/kali/virtualbox/private_key_student -X -C -Y "xhost +; xfce4-session; sudo pkill X;  pkill -U vagrant" &>> /tmp/xrdp-student.log
+	ssh vagrant@127.0.0.1 -o "StrictHostKeyChecking=false" -p 8507 -i /scenario/.vagrant/machines/kali/virtualbox/private_key_student -X -C -Y "xhost +; xfce4-session; sudo pkill X;  pkill -U vagrant" &>> /tmp/xrdp-student.log
 
 else
 	startxfce4
