@@ -123,6 +123,7 @@ useradd student -p $password_hash -m -s /usr/sbin/nologin
 
 # In order for the student to have access to the Kali machine but not to the rest of the environment, we copy the private key and chown it
 # We probably want to find a better approach in the future.
+# TODO: Do we need to redo this when we revert the student machine?
 echo -e "${BLU}[+]${WHT} Adjusting private key ownership for kali linux VM (dev -> student). . . ${NC}"
 cp /scenario/.vagrant/machines/kali/virtualbox/private_key /scenario/.vagrant/machines/kali/virtualbox/private_key_student
 chown student:student /scenario/.vagrant/machines/kali/virtualbox/private_key_student
