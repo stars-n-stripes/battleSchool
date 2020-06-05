@@ -2,7 +2,7 @@
 ### Author: starsnstripes
 
 ### Installation
-On a new Ubuntu Server 20.04, run: 
+On a new Ubuntu Server **20.04**, run: 
 `wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/build.sh -O /tmp/build.sh && chmod +x /tmp/build.sh`
 to download the file. You need to provide two passwords (one for the developer, and one for the student).
 
