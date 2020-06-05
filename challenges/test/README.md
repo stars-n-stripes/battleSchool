@@ -8,9 +8,11 @@ To download the file. You need to provide two passwords (one for the developer, 
 
 ### Description
 
-**startwm.sh** is the script that XRDP runs after user authentication
-**build.sh** is how one provisions an Ubuntu 20.04 LTS Server to run the scenario
-**Vagrantfile** contains information on the scenario
+**startwm.sh** is the script that XRDP runs after user authentication.
+
+**build.sh** is how one provisions an Ubuntu 20.04 LTS Server to run the scenario defined in the Vagrantfile.
+
+The **Vagrantfile** contains information on the scenario, as well as the parameters for the student attacker box.
 
 ##### Usage
 `./build.sh <dev password> <student password>
