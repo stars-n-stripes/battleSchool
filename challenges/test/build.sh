@@ -130,7 +130,7 @@ chown student:student /scenario/.vagrant/machines/kali/virtualbox/private_key_st
 # Add the vagrant up command to the User's crontab
 # https://askubuntu.com/questions/58575/add-lines-to-cron-from-script
 # To prevent confusion between vagrant deploy and running this as dev, run in current user context
-echo -e '${BLU}[+]${WHT} Adding "vagrant up" command to crontab for dev. . . ${NC}'
+echo -e "${BLU}[+]${WHT} Adding \"vagrant up\" command to crontab for dev. . . ${NC}"
 su dev -c '(crontab -u $USER -l; echo -e "@reboot cd /scenario && vagrant up" ) | crontab -u $USER -'
 
 # Get rid of the colord error - This needs to be run on the KALI vagrant box
