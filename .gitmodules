@@ -1,0 +1,3 @@
+[submodule "battleSchoolSM"]
+	path = battleSchoolSM
+	url = https://github.com/stars-n-stripes/battleSchoolSM.git
