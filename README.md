@@ -3,7 +3,8 @@
 
 *Orson Scott Card, "Ender's Game"*
 
-## Table of Contents
+## I'm in a Hurry, Where are the Docs?
+[Battle School Wiki](https://github.com/stars-n-stripes/battleSchool/wiki)
 
 ## Purpose
 The purpose of Battle School is to provide three main functionalities:
