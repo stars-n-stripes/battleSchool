@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Located for now at https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/build.sh
+# Located for now at https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/build.sh
 
 # Set color variables
 RED='\033[0;31m'
@@ -65,7 +65,7 @@ apt install -yqq virtualbox > /dev/null
 
 # Pull a custom xrdp config that kicks the "student" user to the kali VM (once it's up) (Uncomment for manual)
 echo -e "${BLU}[+]${WHT} Downloading and applying xrdp settings. . . ${NC}"
-wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/startwm.sh -O /etc/xrdp/startwm.sh
+wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/startwm.sh -O /etc/xrdp/startwm.sh
 # TODO: Also pull down xrdp.ini with custom login screen
 # In the Vagrant version of this script, this is done in the Vagrantfile
 
