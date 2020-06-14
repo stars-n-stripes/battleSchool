@@ -15,6 +15,8 @@ The purpose of Battle School is based on three tenets:
 
 ## External Links
 
++ [SecGen](https://github.com/cliffe/SecGen), a major inspiration for this repo.
+
 + [A Guide on Combining Terraform and Ansible for AWS](https://github.com/ernesen/Terraform-Ansible)
 
 + [More General Terraform-Ansible Blog Post](https://alex.dzyoba.com/blog/terraform-ansible/)
