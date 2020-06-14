@@ -63,6 +63,11 @@ apt install -yqq virtualbox > /dev/null
 # apt install -yqq qemu-kvm qemu virt-manager
 # Note: for running qemu vms, make sure to add the option "-usbdevice tablet" to ensure accurate mouse mvmnt
 
+echo -e "${BLU}[+]${WHT} Installing docker. . . ${NC}"
+curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+sh /tmp/get-docker.sh
+usermod -aG docker dev
+
 # Pull a custom xrdp config that kicks the "student" user to the kali VM (once it's up) (Uncomment for manual)
 echo -e "${BLU}[+]${WHT} Downloading and applying xrdp settings. . . ${NC}"
 wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/startwm.sh -O /etc/xrdp/startwm.sh
