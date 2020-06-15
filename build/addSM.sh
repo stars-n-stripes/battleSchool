@@ -31,8 +31,13 @@ echo "Downloading BSSM . . ."
 git clone https://github.com/stars-n-stripes/battleSchoolSM
 cd battleSchoolSM
 
+# Setup the server (initial migration)
+echo "Migrating Django database schema. . ."
+python manage.py makemigrations
+python manage.py migrate
+
 # Run the server 
 # TODO: Detect Vbox IP address during runtime
 echo "Running Scenario Manager Web Interface . . ."
 echo "This will attempt to run via sudo:"
-sudo python manage.py runserver 192.168.33.1 80 &
+sudo python manage.py runserver 0.0.0.0:80 &

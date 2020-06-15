@@ -17,17 +17,18 @@ then
 fi
 
 # Input validation
-if [[ -z $1 || -z $2 ]]
+if [[ -z $1 || -z $2 || -z $3 ]]
 then 
-	echo -e "Usage: [sudo] $0 <dev password> <student password>"
+	echo -e "Usage: [sudo] $0 <dev password> <student password> <challenge>"
 	exit
 fi
 
 echo -e "===${BLU}Cyber Combat Simulator build script for Ubuntu Server 20.04 LTS${NC}==="
 echo -e "Author: delogrand/starsnstripes"
 
-# This will help appease apt
+# This will help appease apt, and will set an environment variable for the scenario
 export DEBIAN_FRONTEND=noninteractive
+export SCENARIO_NAME=$3
 
 echo -e "${BLU}[+]${WHT} Installing mkpasswd. . . ${NC}"
 apt install -yqq whois
@@ -96,12 +97,14 @@ apt install -yqq vagrant > /dev/null
 # get the Vagrant file for this scenario
 # Remember to set explicit port forwarding for the kali box ssh so we can know which port to forward via X11
 echo -e "${BLU}[+]${WHT} Downloading scenario Vagrantfile. . . ${NC}"
-wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/test/Vagrantfile -O /tmp/Vagrantfile
+wget "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$3/Vagrantfile" -O /tmp/Vagrantfile
 
 # Vagrant setup
 echo -e "${BLU}[+]${WHT} Creating scenario in the context of the dev user. . . ${NC}"
 mkdir /scenario
 chown dev:dev /scenario
+# Pull the scenario configuration file from GH:
+su dev -c 'wget "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$3/scenario.ini" -O /scenario/scenario.ini'
 su dev -c "cd /scenario && vagrant init"
 # Vagrant gripes if there's already a Vagrantfile in the current directory so we'll copy it in after
 mv /tmp/Vagrantfile /scenario/Vagrantfile
