@@ -46,11 +46,11 @@ Vagrant.configure("2") do |config|
       containers.vm.provider "docker" do |d|
         d.force_host_vm = true
         #d.build_dir="."
-        d.vm.network "private_network", ip: "192.168.33.35"
         d.image = "nginx"
         d.ports = ['80:80']
       # containers.vm.box = "hashicorp/boot2docker"
       containers.vm.synced_folder ".", "/vagrant", disabled: true
+      containers.vm.network "private_network", ip: "192.168.33.35"
 
 
   end
