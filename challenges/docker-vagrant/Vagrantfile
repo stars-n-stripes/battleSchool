@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
   # You may alter this box's configs, but do NOT change the SSH port forward nor the name of the box
   config.vm.define "kali" do |kali|
 	kali.vm.box = "kalilinux/rolling"
-	kali.vm.network  "private_network", ip: "192.168.33.34"
+	kali.vm.network  "private_network", type: "dhcp", name: "vboxnet0"
 	# Enable SSH forwarding of the X session
 	# Also, force the SSH session to a high port to avoid Vagrant conflicts
 	kali.ssh.forward_x11 = true
@@ -32,6 +32,7 @@ Vagrant.configure("2") do |config|
 	# This will allow X GUI apps to run in the context of root
 	kali.vm.provision "shell", inline: 'mkdir /home/vagrant/bin && wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/xsudo.sh -O /home/vagrant/bin/xsudo.sh && chmod +x /home/vagrant/bin/xsudo.sh && echo alias sudo="/home/vagrant/bin/xsudo.sh" > /home/vagrant/.bash_aliases'
 	# Disable logout prompt, minimizing the risk of session save shennanigans
+	# (This errors out)
 	kali.vm.provision "shell", inline: 'xfconf-query -c xfce4-session -p /general/PromptOnLogout -s false'
 
 	# Debug until we get the student side working
@@ -43,7 +44,9 @@ Vagrant.configure("2") do |config|
 
   # This attempts to connect a docker interface
   config.vm.define "containers" do |containers|
+  config.vm.hostname = "docker-host"
       containers.vm.provider "docker" do |d|
+	d.vagrant_vagrantfile = "../../build/b2d-Vagrantfile"
         d.force_host_vm = true
         #d.build_dir="."
         d.image = "nginx"
@@ -51,7 +54,8 @@ Vagrant.configure("2") do |config|
         end
       # containers.vm.box = "hashicorp/boot2docker"
       containers.vm.synced_folder ".", "/vagrant", disabled: true
-      containers.vm.network "private_network", ip: "192.168.33.35"
+      # containers.vm.network "private_network", ip: "192.168.33.35"
+      containers.vm.network "public_network", type: "dhcp" ,bridge: "vboxnet0"
 
 
   
