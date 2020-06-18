@@ -46,29 +46,24 @@ Vagrant.configure("2") do |config|
 
   # This attempts to connect a docker interface
   config.vm.define "containers" do |containers|
-	  containers.vm.box = "gusztavvargadr/docker-linux"
-	  containers.vm.network "private_network", ip: "192.168.33.2" 
-	  # names the machine so it doesn't appear as "default"
-	  #containers.vm.define "docker-host"
-	  containers.vm.provision "shell", inline: <<-SHELL
-		docker --version &&
-		docker network create -d macvlan \
-			--subnet=192.168.33.0/24 \
-			--gateway=192.168.33.1 \
-			--ip-range=192.168.33.128/25 \
-			--aux-address="self=192.168.33.2" \
-			-o parent=eth1 vbox_host
-		ip link add mac0 link eth1 type macvlan mode bridge
-		ip addr add 192.168.33.4 dev mac0
-		ifconfig mac0 up
-		SHELL
-	containers.vm.provision "docker" do |d|
-		d.run "alpine-1", image: "alpine:latest", cmd: "ash", args: "--network vbox_host -it"
-		d.run "alpine-2", image:  "alpine:latest", cmd: "ash", args: "--network vbox_host -it"
-end
-	containers.vm.provider "virtualbox" do |v|
-	# TODO: Start here	
-end	
+  config.vm.hostname = "nginx"
+      containers.vm.provider "docker" do |d|
+	d.vagrant_vagrantfile = "./b2d-Vagrantfile"
+	# d.vagrant_machine = "docker-host"
+        d.force_host_vm = true
+        #d.build_dir="."
+        d.image = "nginx"
+        # d.ports = ['80:80']
+	# d.has_ssh = true
+        end
+      # containers.vm.box = "hashicorp/boot2docker"
+      containers.vm.synced_folder ".", "/vagrant", disabled: true
+      # containers.vm.network "private_network", ip: "192.168.33.35"
+      # containers.vm.network "public_network", type: "dhcp" ,bridge: "eth1", docker_network__ip_range: "192.168.1.252/30", docker_network__gateway: "192.168.33.1"
+      containers.vm.network "private_network", name: "vbox_host", docker_connect__ip: "192.168.33.6"
+      # containers.vm.network "public_network", type: "dhcp"
+
+
   
   end
 

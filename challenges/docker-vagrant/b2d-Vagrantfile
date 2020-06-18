@@ -6,10 +6,22 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-  config.vm.box="hashicorp/boot2docker"
+  # config.vm.box="hashicorp/boot2docker"
+  # Trying something other than the default hashicorp docker version due to issues with provisioning
+  # (docker "network" is not a valid docker command for some reason")
+  config.vm.box = "gusztavvargadr/docker-linux"
   config.vm.network "private_network", ip: "192.168.33.2", name: "vboxnet0" 
   config.vm.hostname = "boot2docker"
-  
+  # names the machine so it doesn't appear as "default"
+  #config.vm.define "docker-host"
+  config.vm.provision "shell", inline: <<-SHELL
+	docker --version &&
+	docker network create -d macvlan \
+		--subnet=192.168.33.0/24 \
+		--gateway=192.168.33.1 \
+		--ip-range=192.168.33.15/28 \
+		-o parent=eth1 vbox_host
+	SHELL
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
