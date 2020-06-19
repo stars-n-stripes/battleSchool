@@ -16,11 +16,14 @@ if [[ $(wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/mast
 	exit 1
 fi
 
-# We need to be the dev user for this
-if [[ $USER != "dev" ]]; then
-	echo "This script must be run as dev."
+# We need to be root for the ssh key transfer at the end 
+if [[ $USER != "root" ]]; then
+	echo "This script must be run as root."
 	exit 1
 fi
+
+# Virtually all of this will be done as dev
+su dev << ENDSU
 
 # If we get past the checks, go ahead and destroy the current scenario
 echo "Destroying current Vagrant Scenario. . . "
@@ -51,6 +54,12 @@ vagrant_result=$?
 if [[ vagrant_result ]]; then
 	echo "INFO: Vagrant returned a non-zero exit code ($vagrant_result). This doesn't neccessarily mean complete failure, but you should take a look at the log located at /tmp/scenario_build.log"
 fi
+ENDSU
+
+echo "Giving ownership of Kali ssh key to student. . ."
+cp /scenario/.vagrant/machines/kali/virtualbox/private_key /scenario/.vagrant/machines/kali/virtualbox/private_key_student
+chown student:student /scenario/.vagrant/machines/kali/virtualbox/private_key_student
+
 
 # TODO: Tie-in a hook of some sort for the battleSchoolSM
 
