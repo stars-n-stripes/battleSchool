@@ -46,10 +46,10 @@ vagrant init
 # Note: Vagrant hates us if we attempt vagrant init after we've already downloaded the Vagrantfile, so that's why we do it after grabbing scenario.ini
 wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile -O Vagrantfile
 vagrant up &> /tmp/scenario_build.log
-
+vagrant_result=$?
 # $? Represents the exit code of the last command, which in this case should be vagrant up
-if [[ $? ]]; then
-	echo "INFO: Vagrant returned a non-zero exit code. This doesn't neccessarily mean complete failure, but you should take a look at the log located at /tmp/scenario_build.log"
+if [[ vagrant_result ]]; then
+	echo "INFO: Vagrant returned a non-zero exit code ($vagrant_result). This doesn't neccessarily mean complete failure, but you should take a look at the log located at /tmp/scenario_build.log"
 fi
 
 # TODO: Tie-in a hook of some sort for the battleSchoolSM
