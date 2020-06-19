@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
 	kali.vm.provision "shell", inline: 'mkdir /home/vagrant/bin && wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/xsudo.sh -O /home/vagrant/bin/xsudo.sh && chmod +x /home/vagrant/bin/xsudo.sh && echo alias sudo="/home/vagrant/bin/xsudo.sh" > /home/vagrant/.bash_aliases'
 	# Disable logout prompt, minimizing the risk of session save shennanigans
 	# TODO: Replace this command with one that will work without anyone being logged in to an XFCE session
-	kali.vm.provision "shell", inline: 'xfconf-query -c xfce4-session -p /general/PromptOnLogout -s false'
+	# kali.vm.provision "shell", inline: 'xfconf-query -c xfce4-session -p /general/PromptOnLogout -s false'
 
 	# Debug until we get the student side working
 	kali.vm.provider "virtualbox" do |v|

@@ -11,8 +11,8 @@ fi
 
 # Test whether or not the scenario exists
 # TODO: Replace the directory "challenges" with "scenarios"
-if [[ ! $(wget https://github.com/stars-n-stripes/battleSchool/challenges/$1/Vagrantfile --spider) ]]; then
-	echo "ERROR: Vagrantfile not found at https://github.com/stars-n-stripes/battleSchool/challenges/$1/Vagrantfile"
+if [[ $(wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile --spider) ]]; then
+	echo "ERROR: Vagrantfile not found at https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile"
 	exit 1
 fi
 
@@ -38,12 +38,13 @@ echo "Done."
 
 # Download the new scenario.ini and Vagrantfile
 echo "Downloading new scenario files. . . "
-wget https://github.com/stars-n-stripes/battleSchool/challenges/$1/scenario.ini -O scenario.ini
-wget https://github.com/stars-n-stripes/battleSchool/challenges/$1/Vagrantfile -O Vagrantfile
+wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/scenario.ini -O scenario.ini
 
 # Build the new Vagrant environment
 echo "Building new Vagrant environment. . ."
 vagrant init
+# Note: Vagrant hates us if we attempt vagrant init after we've already downloaded the Vagrantfile, so that's why we do it after grabbing scenario.ini
+wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile -O Vagrantfile
 vagrant up &> /tmp/scenario_build.log
 
 # $? Represents the exit code of the last command, which in this case should be vagrant up
