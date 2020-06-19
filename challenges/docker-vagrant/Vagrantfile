@@ -58,9 +58,9 @@ Vagrant.configure("2") do |config|
 			--ip-range=192.168.33.128/25 \
 			--aux-address="self=192.168.33.2" \
 			-o parent=eth1 vbox_host
-		ip link add mac0 link eth1 type macvlan mode bridge
-		ip addr add 192.168.33.4 dev mac0
-		ifconfig mac0 up
+		# The following command forces eth1 to run in promiscuous mode, allowing us to ping the containers from the kali vm
+		# https://superuser.com/questions/1343250
+		sudo ip link set eth1 promisc on
 		SHELL
 	containers.vm.provision "docker" do |d|
 		d.run "alpine-1", image: "alpine:latest", cmd: "ash", args: "--network vbox_host -it"
@@ -68,7 +68,7 @@ Vagrant.configure("2") do |config|
 end
 	containers.vm.provider "virtualbox" do |v|
 		# Enable promiscuous mode on this VM's adapter to support macvlan
-		v.customize ["modifyvm", :id, "--nicpromisc", "allow-all"]
+		v.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
 end	
   
   end
