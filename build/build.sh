@@ -9,7 +9,7 @@ WHT='\033[1;37m'
 NC='\033[0m' 
 
 
-# This script should be (initially) run as root, though it will su to dev rather quickly
+# This script should be (initially) run as root, though it will su to dev for Vagrant operations
 if [[ "$USER" != "root" ]]
 then 
 	echo -e "For developer user setup, please run this script as root or with sudo"
@@ -23,7 +23,7 @@ then
 	exit
 fi
 
-echo -e "===${BLU}Cyber Combat Simulator build script for Ubuntu Server 20.04 LTS${NC}==="
+echo -e "===${BLU}Battle School build script for Ubuntu Server 20.04 LTS${NC}==="
 echo -e "Author: delogrand/starsnstripes"
 
 # This will help appease apt, and will set an environment variable for the scenario
