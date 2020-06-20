@@ -39,15 +39,18 @@ echo "Downloading BSSM . . ."
 git clone https://github.com/stars-n-stripes/battleSchoolSM
 cd battleSchoolSM
 
+# Install python dependencies
+echo "Installing dependencies with pipenv. . ."
+pipenv install
+
 # Setup the server (initial migration)
 echo "Migrating Django database schema. . ."
-python manage.py makemigrations
-python manage.py migrate
+pipenv run python manage.py makemigrations
 DEVCMD
 # Run the Django DB migration in a separate su command so we can pull out whether or not an error occured.
-MIGRATE_RETURN=$(su dev -c 'python manage.py migrate &> /tmp/django-migrate.log; echo $?')
-
-if [[ $MIGRATE_RETURN ]]; then
+MIGRATE_RETURN=$(su dev -c 'cd /scenario/battleSchoolSM && pipenv run python manage.py migrate &> /tmp/django-migrate.log; echo $?')
+echo "Migrate returned $MIGRATE_RETURN"
+if [[ $MIGRATE_RETURN -ne 0 ]]; then
 	# Something went wrong with the data migration
 	echo "ERROR: Something went wrong with building the Battle School Management Server. Please check the log generated at /tmp/django-migrate.log"
 	exit
@@ -57,5 +60,5 @@ fi
 echo "Running Scenario Manager Web Interface on vboxnet0. . ."
 # Grab the server IP that is exposed on the VirtualBox host-only network and only expose the server to that IP
 VMWARE_IP=$(ip -f inet addr show vboxnet0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p')
-sudo python manage.py runserver $VMWARE_IP:80 &
+su dev -c "cd /scenario/battleSchoolSM && pipenv run  python manage.py runserver $VMWARE_IP:8080 &"
 
