@@ -22,8 +22,16 @@
 # 00000000000000000000000000000000000000000sns #
 ################################################
 
-echo "Changing to dev user. . ."
-su dev
+# Verify that this script is running as root
+if [[ $USER != "root" ]]; then
+	echo "Please run this script as root so it can install pipenv."
+	exit
+fi
+
+# Install pipenv as a dependency and set python to be python3
+apt install -yqq pipenv python-is-python3 
+
+su dev << DEVCMD
 cd /scenario
 
 # Download the codebase
@@ -35,9 +43,19 @@ cd battleSchoolSM
 echo "Migrating Django database schema. . ."
 python manage.py makemigrations
 python manage.py migrate
+DEVCMD
+# Run the Django DB migration in a separate su command so we can pull out whether or not an error occured.
+MIGRATE_RETURN=$(su dev -c 'python manage.py migrate &> /tmp/django-migrate.log; echo $?')
+
+if [[ $MIGRATE_RETURN ]]; then
+	# Something went wrong with the data migration
+	echo "ERROR: Something went wrong with building the Battle School Management Server. Please check the log generated at /tmp/django-migrate.log"
+	exit
+fi
 
 # Run the server 
-# TODO: Detect Vbox IP address during runtime
-echo "Running Scenario Manager Web Interface . . ."
-echo "This will attempt to run via sudo:"
-sudo python manage.py runserver 0.0.0.0:80 &
+echo "Running Scenario Manager Web Interface on vboxnet0. . ."
+# Grab the server IP that is exposed on the VirtualBox host-only network and only expose the server to that IP
+VMWARE_IP=$(ip -f inet addr show vboxnet0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p')
+sudo python manage.py runserver $VMWARE_IP:80 &
+
