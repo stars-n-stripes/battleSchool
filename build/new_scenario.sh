@@ -2,16 +2,21 @@
 
 # Script that will clear out the currently loaded scenario and spin up a new one.
 
-# Verify that a scenario has been provided
+# Verify that a scenario and target branch has been provided
 
 if [[ -z $1 ]]; then
-	echo "Usage: $0 [scenario name]"
+	echo "Usage: $0 [scenario name] [branch]"
+	exit 1
+fi
+
+if [[ -z $2 ]]; then
+	echo "Usage: $0 [scenario name] [branch]"
 	exit 1
 fi
 
 # Test whether or not the scenario exists
 # TODO: Replace the directory "challenges" with "scenarios"
-if [[ $(wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile --spider) ]]; then
+if [[ $(wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/$2/challenges/$1/Vagrantfile --spider) ]]; then
 	echo "ERROR: Vagrantfile not found at https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile"
 	exit 1
 fi
@@ -41,7 +46,7 @@ echo "Done."
 
 # Download the new scenario.ini and Vagrantfile
 echo "Downloading new scenario files. . . "
-wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/scenario.ini -O scenario.ini
+wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/$2/challenges/$1/scenario.ini -O scenario.ini
 
 # Build the new Vagrant environment
 echo "Building new Vagrant environment. . ."
