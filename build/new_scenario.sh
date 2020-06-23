@@ -21,6 +21,12 @@ if [[ $(wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/$2/c
 	exit 1
 fi
 
+
+if [[ $(wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/$2/challenges/$1/scenario.ini --spider) ]]; then
+	echo "ERROR: Vagrantfile not found at https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile"
+	exit 1
+fi
+
 # We need to be root for the ssh key transfer at the end 
 if [[ $USER != "root" ]]; then
 	echo "This script must be run as root."
