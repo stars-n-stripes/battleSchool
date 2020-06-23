@@ -60,5 +60,5 @@ fi
 echo "Running Scenario Manager Web Interface on vboxnet0. . ."
 # Grab the server IP that is exposed on the VirtualBox host-only network and only expose the server to that IP
 VMWARE_IP=$(ip -f inet addr show vboxnet0 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p')
-su dev -c "cd /scenario/battleSchoolSM && pipenv run  python manage.py runserver $VMWARE_IP:8080 &"
+su dev -c "cd /scenario/battleSchoolSM && pipenv run  python manage.py runserver $VMWARE_IP:8080"
 
