@@ -111,7 +111,8 @@ su dev -c "cd /scenario && vagrant init"
 # Vagrant gripes if there's already a Vagrantfile in the current directory so we'll copy it in after
 mv /tmp/Vagrantfile /scenario/Vagrantfile
 chown dev:dev /scenario/Vagrantfile
-su dev -c "cd /scenario && vagrant up"
+# Turns out even a failure within a bash script provider is considered "critical" so we want to ignore them and put every machine up regardless
+su dev -c "cd /scenario && vagrant up --no-destroy-on-error"
 
 # alter the kali vm with vboxmanage to force it to be fullscreen all the time
 # VBoxManage setextradata "<vm>" "GUI/Fullscreen" true
