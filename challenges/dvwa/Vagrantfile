@@ -1,0 +1,123 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  # === PROVIDER PRIORITIES ===
+  # Here, we define TWO providers - the VirtualBox one and the Docker one.
+  #config.vm.provider "docker"
+  #config.vm.provider "virtualbox"
+
+
+
+  # ===STUDENT BOX===
+  # You may alter this box's configs, but do NOT change the SSH port forward nor the name of the box
+  config.vm.define "kali" do |kali|
+	kali.vm.box = "kalilinux/rolling"
+	# kali.vm.network  "private_network", type: "dhcp", name: "vboxnet0"
+	# kali.vm.network "private_network", ip: "192.168.33.3", virtualbox__intnet: true
+	# Enable SSH forwarding of the X session
+	kali.vm.network "private_network", ip: "192.168.33.3"
+	# Also, force the SSH session to a high port to avoid Vagrant conflicts
+	kali.ssh.forward_x11 = true
+	kali.vm.network "forwarded_port", guest: 22, host: 8507
+	kali.vm.provision "shell", inline:  'sed -i /usr/share/polkit-1/actions/org.freedesktop.color.policy -e "s/<allow_inactive>no<\/allow_inactive>/<allow_inactive>yes<\/allow_inactive>/gm; s/<allow_any>auth_admin<\/allow_any>/<allow_any>yes<\/allow_any>/gm"; true'
+	# This will allow X GUI apps to run in the context of root
+	kali.vm.provision "shell", inline: 'mkdir /home/vagrant/bin && wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/xsudo.sh -O /home/vagrant/bin/xsudo.sh && chmod +x /home/vagrant/bin/xsudo.sh && echo alias sudo="/home/vagrant/bin/xsudo.sh" > /home/vagrant/.bash_aliases; true'
+	# Disable logout prompt, minimizing the risk of session save shennanigans
+	# TODO: Replace this command with one that will work without anyone being logged in to an XFCE session
+	# kali.vm.provision "shell", inline: 'xfconf-query -c xfce4-session -p /general/PromptOnLogout -s false'
+
+	# Debug until we get the student side working
+	kali.vm.provider "virtualbox" do |v|
+		v.gui = false
+	end
+  end
+  # ===END STUDENT BOX===
+
+  # This attempts to connect a docker interface
+  config.vm.define "containers" do |containers|
+	  containers.vm.box = "gusztavvargadr/docker-linux"
+	  containers.vm.network "private_network", ip: "192.168.33.2"
+	  # names the machine so it doesn't appear as "default"
+	  #containers.vm.define "docker-host"
+	  containers.vm.provision "shell", inline: <<-SHELL
+		docker --version &&
+		docker network create -d macvlan \
+			--subnet=192.168.33.0/24 \
+			--gateway=192.168.33.1 \
+			--ip-range=192.168.33.128/25 \
+			--aux-address="self=192.168.33.2" \
+			-o parent=eth1 vbox_host
+		# The following command forces eth1 to run in promiscuous mode, allowing us to ping the containers from the kali vm
+		# https://superuser.com/questions/1343250
+		sudo ip link set eth1 promisc on
+		SHELL
+	containers.vm.provision "docker" do |d|
+		d.run "dvwa", image:  "vulnerables/web-dvwa", args: "--network vbox_host -it"
+end
+	containers.vm.provider "virtualbox" do |v|
+		# Enable promiscuous mode on this VM's adapter to support macvlan
+		v.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+end
+
+  end
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # NOTE: This will enable public access to the opened port
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine and only allow access
+  # via 127.0.0.1 to disable public access
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  # config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #   vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+  #   vb.memory = "1024"
+  # end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  # config.vm.provision "shell", inline: <<-SHELL
+  #   apt-get update
+  #   apt-get install -y apache2
+  # SHELL
+end
