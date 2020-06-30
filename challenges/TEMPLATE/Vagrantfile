@@ -1,0 +1,101 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  # === PROVIDER PRIORITIES ===
+  # Here, we define TWO providers - the VirtualBox one and the Docker one.
+  #config.vm.provider "virtualbox"
+
+
+
+  # ===STUDENT BOX===
+  # You may alter this box's configs, but do NOT change the SSH port forward nor the name of the box
+  config.vm.define "kali" do |kali|
+	kali.vm.box = "kalilinux/rolling"
+	# kali.vm.network  "private_network", type: "dhcp", name: "vboxnet0"
+	# kali.vm.network "private_network", ip: "192.168.33.3", virtualbox__intnet: true
+	# Enable SSH forwarding of the X session
+	kali.vm.network "private_network", ip: "192.168.33.3"
+	# Also, force the SSH session to a high port to avoid Vagrant conflicts
+	kali.ssh.forward_x11 = true
+	kali.vm.network "forwarded_port", guest: 22, host: 8507
+	kali.vm.provision "shell", inline:  'sed -i /usr/share/polkit-1/actions/org.freedesktop.color.policy -e "s/<allow_inactive>no<\/allow_inactive>/<allow_inactive>yes<\/allow_inactive>/gm; s/<allow_any>auth_admin<\/allow_any>/<allow_any>yes<\/allow_any>/gm"'
+	# This will allow X GUI apps to run in the context of root
+	kali.vm.provision "shell", inline: 'mkdir /home/vagrant/bin;  wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/xsudo.sh -O /home/vagrant/bin/xsudo.sh && chmod +x /home/vagrant/bin/xsudo.sh && echo alias sudo="/home/vagrant/bin/xsudo.sh" > /home/vagrant/.bash_aliases'
+	# Disable logout prompt, minimizing the risk of session save shennanigans
+	# TODO: Replace this command with one that will work without anyone being logged in to an XFCE session
+	# Reference for xfconf: https://docs.xfce.org/xfce/xfconf/xfconf-query
+	# Reference for dbus madness: https://bbs.archlinux.org/viewtopic.php?id=228599
+	 kali.vm.provision "shell", inline: 'su vagrant -l -c \'export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus" && xfconf-query -n -t "bool" -c xfce4-session -p /general/PromptOnLogout -s false\''
+
+	# Debug until we get the student side working
+	kali.vm.provider "virtualbox" do |v|
+		v.gui = false
+	end
+  end
+  # ===END STUDENT BOX===
+
+  # ===BEGIN DOCKER EXAMPLE===
+  # The following block defines a virtualbox machine that hosts docker containers
+  # The networking settings make sure that each container has its own IP on the virtual network defined in the Kali machine block
+  # For example's sake, two containers are defined that just run a local shell
+  vm.define "containers" do |containers|
+	  containers.vm.box = "gusztavvargadr/docker-linux"
+	  containers.vm.network "private_network", ip: "192.168.33.2" 
+	  # names the machine so it doesn't appear as "default"
+	  #containers.vm.define "docker-host"
+	  containers.vm.provision "shell", inline: <<-SHELL
+		docker --version &&
+		docker network create -d macvlan \
+			--subnet=192.168.33.0/24 \
+			--gateway=192.168.33.1 \
+			--ip-range=192.168.33.128/25 \
+			--aux-address="self=192.168.33.2" \
+			-o parent=eth1 vbox_host
+		# The following command tells the guest OS to tag eth1 to run in promiscuous mode, allowing us to ping the containers from the kali vm
+		# https://superuser.com/questions/1343250
+		sudo ip link set eth1 promisc on
+		SHELL
+	containers.vm.provision "docker" do |d|
+
+		# Define containers here
+		# You can either define them as below, with a direct image pull and command
+		# ...or define them via Dockerfile by uncommenting the following example: 
+		# d.build_image "/path/to/dockerfile", args: "-t MY-NAME/MY-IMAGE"
+		# d.run "MY-NAME/MY-IMAGE", args "--network vbox_host"
+
+		# Note: When running two containers with the same image, you MUST use the first argument to define a unique name and then
+		# explicitly define the  image variable, as shown below
+		d.run "alpine-1", image: "alpine:latest", cmd: "ash", args: "--network vbox_host -it"
+		d.run "alpine-2", image:  "alpine:latest", cmd: "ash", args: "--network vbox_host -it"
+		
+		# Regardless of whether or not you pull from the cloud or run from a Dockerfile, you MUST have "--network vbox_host"
+		# as part of the args argument for the run command if you want the container to share a network w/ the Kali machine
+
+		# More documentation can be found for the Docker provisioner at:
+		# https://www.vagrantup.com/docs/provisioning/docker
+		# Note: this is NOT the same as the Docker provider, which I haven't gotten to play nice with battleSchool yet
+end
+	containers.vm.provider "virtualbox" do |v|
+		# Enable promiscuous mode on this VM's adapter to support macvlan container addressing
+		# --nicpromisc2 refers to the second adapter (eth1). If you want to use a different adapter, change the number
+		# As of right now, I'm not sure if you need both this and the command in the shell provisioner, or just the latter
+		# Either-way, this won't work w/o the shell provisioner command.
+		v.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+end	
+  
+  end
+  #===END DOCKER EXAMPLE===
+
+
+end

@@ -9,7 +9,7 @@ WHT='\033[1;37m'
 NC='\033[0m' 
 
 
-# This script should be (initially) run as root, though it will su to dev rather quickly
+# This script should be (initially) run as root, though it will su to dev for Vagrant operations
 if [[ "$USER" != "root" ]]
 then 
 	echo -e "For developer user setup, please run this script as root or with sudo"
@@ -23,7 +23,7 @@ then
 	exit
 fi
 
-echo -e "===${BLU}Cyber Combat Simulator build script for Ubuntu Server 20.04 LTS${NC}==="
+echo -e "===${BLU}Battle School build script for Ubuntu Server 20.04 LTS${NC}==="
 echo -e "Author: delogrand/starsnstripes"
 
 # This will help appease apt, and will set an environment variable for the scenario
@@ -51,6 +51,8 @@ echo -e "${BLU}[+]${WHT} Installing XFCE desktop environment. . . ${NC}"
 # This download is over a gig, so it's slightly more verbose
 apt install -yq xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils rdesktop xfce4-terminal > /dev/null
 apt remove -yqq gdm3 --purge
+# Might be able to remove gnome-shell from this, I'll have to check sometime
+apt remove --auto-remove ubuntu-gnome-desktop gnome-shell
 # Install the RDP server and associate the new xrdp user with the ssl-cert group
 # https://askubuntu.com/questions/592537/can-i-access-ubuntu-from-windows-remotely/592544#592544
 echo -e "${BLU}[+]${WHT} Installing xrdp and adding xrdp user to ssl-cert group. . . ${NC}"
@@ -109,7 +111,8 @@ su dev -c "cd /scenario && vagrant init"
 # Vagrant gripes if there's already a Vagrantfile in the current directory so we'll copy it in after
 mv /tmp/Vagrantfile /scenario/Vagrantfile
 chown dev:dev /scenario/Vagrantfile
-su dev -c "cd /scenario && vagrant up"
+# Turns out even a failure within a bash script provider is considered "critical" so we want to ignore them and put every machine up regardless
+su dev -c "cd /scenario && vagrant up --no-destroy-on-error"
 
 # alter the kali vm with vboxmanage to force it to be fullscreen all the time
 # VBoxManage setextradata "<vm>" "GUI/Fullscreen" true
