@@ -94,7 +94,11 @@ echo -e "xfce4-session" > /home/dev/.xsession
 # Install vagrant
 # TODO: Store the packages online somewhere so this system doesn't fall victim to an update
 echo -e "${BLU}[+]${WHT} Installing vagrant. . . ${NC}"
-apt install -yqq vagrant > /dev/null
+# apt install -yqq vagrant > /dev/null
+# The most up-to-date version (hosted on vagrantup.com) avoids a plethora of warnings that come with every execution of the newest apt package
+wget https://releases.hashicorp.com/vagrant/2.2.9/vagrant_2.2.9_x86_64.deb -O /tmp/vagrant.deb
+apt install -yqq /tmp/vagrant.deb
+rm /tmp/vagrant.deb
 
 # get the Vagrant file for this scenario
 # Remember to set explicit port forwarding for the kali box ssh so we can know which port to forward via X11
