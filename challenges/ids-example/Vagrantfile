@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
     # We're goign to use virtualbox__intnet in this scenario because this:
     # 1. Disables DHCP, which sometimes clobbers static Vagrant IPs, and
     # 2. Allows us to enforce the IDS as a MiTM between the student and metasploitable3
-	kali.vm.network "private_network", ip: "192.168.31.2"
+	kali.vm.network "private_network", ip: "192.168.31.2", virtualbox__intnet: true
 	# Also, force the SSH session to a high port to avoid Vagrant conflicts
 	kali.ssh.forward_x11 = true
 	# DO NOT CHANGE THE FOLLOWING LINE
