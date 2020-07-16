@@ -63,6 +63,8 @@ adduser xrdp ssl-cert
 # Install virtualization software (vbox now, TODO is to move to KVM)
 echo -e "${BLU}[+]${WHT} Installing virtualbox. . . ${NC}"
 apt install -yqq virtualbox > /dev/null
+echo -e "${BLU}[+]${WHT} Disabling DHCP server for vboxnet0. . . ${NC}"
+vboxmanage dhcpserver remove --ifname vboxnet0
 # apt install -yqq qemu-kvm qemu virt-manager
 # Note: for running qemu vms, make sure to add the option "-usbdevice tablet" to ensure accurate mouse mvmnt
 
