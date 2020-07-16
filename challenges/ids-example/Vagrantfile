@@ -1,0 +1,69 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  # === PROVIDER PRIORITIES ===
+  # Here, we define TWO providers - the VirtualBox one and the Docker one.
+  #config.vm.provider "virtualbox"
+
+
+
+  # ===STUDENT BOX===
+  # You may alter this box's configs, but do NOT change the SSH port forward nor the name of the box
+  config.vm.define "kali" do |kali|
+	kali.vm.box = "kalilinux/rolling"
+    # We're goign to use virtualbox__intnet in this scenario because this:
+    # 1. Disables DHCP, which sometimes clobbers static Vagrant IPs, and
+    # 2. Allows us to enforce the IDS as a MiTM between the student and metasploitable3
+	kali.vm.network "private_network", ip: "192.168.31.2"
+	# Also, force the SSH session to a high port to avoid Vagrant conflicts
+	kali.ssh.forward_x11 = true
+	# DO NOT CHANGE THE FOLLOWING LINE
+	kali.vm.network "forwarded_port", guest: 22, host: 8507
+	kali.vm.provision "shell", inline:  'sed -i /usr/share/polkit-1/actions/org.freedesktop.color.policy -e "s/<allow_inactive>no<\/allow_inactive>/<allow_inactive>yes<\/allow_inactive>/gm; s/<allow_any>auth_admin<\/allow_any>/<allow_any>yes<\/allow_any>/gm"'
+	# This will allow X GUI apps to run in the context of root
+	kali.vm.provision "shell", inline: 'mkdir /home/vagrant/bin;  wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/xsudo.sh -O /home/vagrant/bin/xsudo.sh && chmod +x /home/vagrant/bin/xsudo.sh && echo alias sudo="/home/vagrant/bin/xsudo.sh" > /home/vagrant/.bash_aliases'
+
+	 kali.vm.provision "shell", inline: 'su vagrant -l -c \'export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus" && xfconf-query -n -t "bool" -c xfce4-session -p /general/PromptOnLogout -s false\''
+
+	# Debug until we get the student side working
+	kali.vm.provider "virtualbox" do |v|
+		v.gui = false
+	end
+  end
+  # ===END STUDENT BOX===
+
+config.vm.define "vulnbox" do |vuln|
+# Since this is an IDS demonstration, we'll use a target box with all defensive capabilities of burning cardboard
+vuln.vm.box = "rapid7/metasploitable3-ub1404"
+vuln.vm.network "private_network", ip: "192.168.32.2", virtualbox__intnet: true
+end
+
+config.vm.define "router-ids" do |ids|
+# Using 19.04 since it's the latest version that Snort has thorough installation documentation on.
+ids.vm.box = "bento/ubuntu-19.04"
+# Network adapters that will "bridge" the two networks
+# Kali
+ids.vm.network "private_network", ip: "192.168.31.1", virtualbox__intnet: true
+# Vuln
+ids.vm.network "private_network", ip: "192.168.32.1", virtualbox__intnet: true
+# Setup snort on the machine
+ids.vm.provision "shell", path: "./snort.sh"
+# Setup routes for the two other machines
+ids.vm.provision "shell", path: "./routing.sh"
+end
+
+  
+  end
+
+
