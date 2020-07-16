@@ -58,9 +58,9 @@ ids.vm.network "private_network", ip: "192.168.31.1", virtualbox__intnet: true
 # Vuln
 ids.vm.network "private_network", ip: "192.168.32.1", virtualbox__intnet: true
 # Setup snort on the machine
-ids.vm.provision "shell", path: "./snort.sh"
+ids.vm.provision "shell", path: "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/ids-example/snort.sh"
 # Setup routes for the two other machines
-ids.vm.provision "shell", path: "./routing.sh"
+ids.vm.provision "shell", path: "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/ids-example/routing.sh"
 end
 
   

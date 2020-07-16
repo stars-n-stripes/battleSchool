@@ -61,10 +61,7 @@ vagrant init
 wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile -O Vagrantfile
 vagrant up --no-destroy-on-error  &> /tmp/scenario_build.log
 vagrant_result=$?
-# $? Represents the exit code of the last command, which in this case should be vagrant up
-if [[ vagrant_result ]]; then
-	echo "INFO: Vagrant returned a non-zero exit code ($vagrant_result). This doesn't neccessarily mean complete failure, but you should take a look at the log located at /tmp/scenario_build.log"
-fi
+
 ENDSU
 
 echo "Giving ownership of Kali ssh key to student. . ."
