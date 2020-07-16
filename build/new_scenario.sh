@@ -75,4 +75,5 @@ chown student:student /scenario/.vagrant/machines/kali/virtualbox/private_key_st
 # TODO: Tie-in a hook of some sort for the battleSchoolSM
 
 echo "Vagrant commands complete! You should verify that all boxes are up by going to /scenario and running vagrant status"
+echo "(If it appears vagrant did not build the scenario properly, check /tmp/scenario_build.log)"
 exit 0
