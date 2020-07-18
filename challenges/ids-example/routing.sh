@@ -4,6 +4,8 @@
 
 # Enable IP forwarding
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+# Apply IP forwarding
+sysctl -p /etc/sysctl.conf
 
 # The following iptables stuff is not needed for this example; but I'm leaving my code in there for inspiration
 # It probably doesn't work, but the reference should help

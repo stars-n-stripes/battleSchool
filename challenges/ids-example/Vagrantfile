@@ -59,7 +59,8 @@ end
 		vb.gui = false
 	end
 	# Specific to this scenario; set router-ids as the default gateway
-	kali.vm.provision "shell", run: "always", inline: "route add default gw 192.168.31.1"	
+	#kali.vm.provision "shell", run: "always", inline: "route add default gw 192.168.31.1"
+	kali.vm.provision "shell", run: "always", inline: "ip route add 192.168.32.0/24 via 192.168.31.1"	
 	# Specific to this scenario; use a trigger to force a reload of kali (for some reason, static IP on intnet only takes after a reboot)
 	# ref: vagrantup.com/docs/triggers/configuration#after
 	kali.trigger.after :up do |t|
@@ -79,9 +80,10 @@ vuln.vm.box_version = "1.0"
 vuln.ssh.username = "msfadmin"
 vuln.ssh.password = "msfadmin"
 vuln.vm.synced_folder ".", "/vagrant", disabled: true
-vuln.vm.network "private_network", ip: "192.168.31.2", virtualbox__intnet: "victim"
+vuln.vm.network "private_network", ip: "192.168.32.2", virtualbox__intnet: "victim"
 # Specific to this scenario; set router-ids as the default gateway
-vuln.vm.provision "shell", run: "always", inline: "route add default gw 192.168.32.1"	
+# vuln.vm.provision "shell", run: "always", inline: "route add default gw 192.168.32.1"	
+vuln.vm.provision "shell", run: "always", inline: "ip route add 192.168.31.0/24 via 192.168.32.1"	
 
 end
   
