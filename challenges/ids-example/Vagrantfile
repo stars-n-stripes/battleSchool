@@ -63,8 +63,9 @@ end
 	# Specific to this scenario; use a trigger to force a reload of kali (for some reason, static IP on intnet only takes after a reboot)
 	# ref: vagrantup.com/docs/triggers/configuration#after
 	kali.trigger.after :up do |t|
-		t.info = "Restarting networking service so IP changes to take effect..."
-		t.run = {inline: "systemctl restart network-manager.service"}
+		t.info = "Restarting networking service so static IP assignment can take effect..."
+		# t.run = {inline: "systemctl restart network-manager.service"}
+		t.run_remote = {inline: "service network-manager restart"}
 	end
 	
 end
