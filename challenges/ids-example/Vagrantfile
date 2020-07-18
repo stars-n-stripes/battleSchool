@@ -16,6 +16,21 @@ Vagrant.configure("2") do |config|
   # Here, we define TWO providers - the VirtualBox one and the Docker one.
   #config.vm.provider "virtualbox"
 
+# Attempting to define router first to support client-side route commands
+config.vm.define "router-ids" do |ids|
+# Using 18.04 since it's the latest LTS version that Snort has thorough installation documentation on.
+ids.vm.box = "bento/ubuntu-18.04"
+# Network adapters that will "bridge" the two networks
+# Kali
+ids.vm.network "private_network", ip: "192.168.31.1", virtualbox__intnet: "student"
+# Vuln
+ids.vm.network "private_network", ip: "192.168.32.1", virtualbox__intnet: "victim"
+# Setup snort on the machine
+# ids.vm.provision "shell", path: "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/ids-example/snort.sh"
+# Setup routes for the two other machines
+ids.vm.provision "shell", path: "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/ids-example/routing.sh"
+end
+
 
 
   # ===STUDENT BOX===
@@ -25,11 +40,11 @@ Vagrant.configure("2") do |config|
     # We're goign to use virtualbox__intnet in this scenario because this:
     # 1. Disables DHCP, which sometimes clobbers static Vagrant IPs, and
     # 2. Allows us to enforce the IDS as a MiTM between the student and metasploitable3
-	kali.vm.network "private_network", ip: "192.168.31.2", virtualbox__intnet: true
+	kali.vm.network "private_network", ip: "192.168.31.2", virtualbox__intnet: "student" 
 	# Also, force the SSH session to a high port to avoid Vagrant conflicts
 	kali.ssh.forward_x11 = true
 	# DO NOT CHANGE THE FOLLOWING LINE
-	kali.vm.network "forwarded_port", guest: 22, host: 8507
+	kali.vm.network "forwarded_port", guest: 22, host: 8507, id: "ssh"
 	kali.vm.provision "shell", inline:  'sed -i /usr/share/polkit-1/actions/org.freedesktop.color.policy -e "s/<allow_inactive>no<\/allow_inactive>/<allow_inactive>yes<\/allow_inactive>/gm; s/<allow_any>auth_admin<\/allow_any>/<allow_any>yes<\/allow_any>/gm"'
 	# This will allow X GUI apps to run in the context of root
 	kali.vm.provision "shell", inline: 'mkdir /home/vagrant/bin;  wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/xsudo.sh -O /home/vagrant/bin/xsudo.sh && chmod +x /home/vagrant/bin/xsudo.sh && echo alias sudo="/home/vagrant/bin/xsudo.sh" > /home/vagrant/.bash_aliases'
@@ -45,6 +60,13 @@ Vagrant.configure("2") do |config|
 	end
 	# Specific to this scenario; set router-ids as the default gateway
 	kali.vm.provision "shell", run: "always", inline: "route add default gw 192.168.31.1"	
+	# Specific to this scenario; use a trigger to force a reload of kali (for some reason, static IP on intnet only takes after a reboot)
+	# ref: vagrantup.com/docs/triggers/configuration#after
+	kali.trigger.after :up do |t|
+		t.info = "Restarting networking service so IP changes to take effect..."
+		t.run = {inline: "systemctl restart network-manager.service"}
+	end
+	
 end
   # ===END STUDENT BOX===
 
@@ -56,26 +78,11 @@ vuln.vm.box_version = "1.0"
 vuln.ssh.username = "msfadmin"
 vuln.ssh.password = "msfadmin"
 vuln.vm.synced_folder ".", "/vagrant", disabled: true
-vuln.vm.network "private_network", ip: "192.168.32.2", virtualbox__intnet: true
+vuln.vm.network "private_network", ip: "192.168.31.2", virtualbox__intnet: "victim"
 # Specific to this scenario; set router-ids as the default gateway
 vuln.vm.provision "shell", run: "always", inline: "route add default gw 192.168.32.1"	
 
 end
-
-config.vm.define "router-ids" do |ids|
-# Using 18.04 since it's the latest LTS version that Snort has thorough installation documentation on.
-ids.vm.box = "bento/ubuntu-18.04"
-# Network adapters that will "bridge" the two networks
-# Kali
-ids.vm.network "private_network", ip: "192.168.31.1", virtualbox__intnet: true
-# Vuln
-ids.vm.network "private_network", ip: "192.168.32.1", virtualbox__intnet: true
-# Setup snort on the machine
-# ids.vm.provision "shell", path: "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/ids-example/snort.sh"
-# Setup routes for the two other machines
-ids.vm.provision "shell", path: "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/ids-example/routing.sh"
-end
-
   
   end
 
