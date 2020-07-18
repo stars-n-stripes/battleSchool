@@ -13,4 +13,11 @@ iptables -t nat -A POSTROUTING ! -d 192.168.32.0/24 -o eth1 -j SNAT --to-source 
 
 # Save forwarding rules in case on unexpected reboot
 # Can't use this right now as su -c (for sudo redirects) requests password auth
-# sudo iptables-save > /etc/iptables.rules
+iptables-save > /etc/iptables.rules
+
+# Add crontab to restore forwarding rules on boot via iptables-restore
+cd /tmp
+crontab -l > rootcron
+echo "@reboot iptables-restore" >> rootcron
+crontab rootcron
+rm rootcron
