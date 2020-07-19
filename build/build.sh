@@ -52,7 +52,7 @@ echo -e "${BLU}[+]${WHT} Installing XFCE desktop environment. . . ${NC}"
 apt install -yq xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils rdesktop xfce4-terminal > /dev/null
 apt remove -yqq gdm3 --purge
 # Might be able to remove gnome-shell from this, I'll have to check sometime
-apt remove --auto-remove ubuntu-gnome-desktop gnome-shell
+apt remove -yqq --auto-remove ubuntu-gnome-desktop gnome-shell
 # Install the RDP server and associate the new xrdp user with the ssl-cert group
 # https://askubuntu.com/questions/592537/can-i-access-ubuntu-from-windows-remotely/592544#592544
 echo -e "${BLU}[+]${WHT} Installing xrdp and adding xrdp user to ssl-cert group. . . ${NC}"
