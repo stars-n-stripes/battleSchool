@@ -112,7 +112,7 @@ echo -e "${BLU}[+]${WHT} Creating scenario in the context of the dev user. . . $
 mkdir /scenario
 chown dev:dev /scenario
 # Pull the scenario configuration file from GH:
-su dev -c 'wget "https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$3/scenario.ini" -O /scenario/scenario.ini'
+su dev -c "wget \"https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$3/scenario.ini\" -O /scenario/scenario.ini"
 su dev -c "cd /scenario && vagrant init"
 # Vagrant gripes if there's already a Vagrantfile in the current directory so we'll copy it in after
 mv /tmp/Vagrantfile /scenario/Vagrantfile
