@@ -54,7 +54,7 @@ end
 
 	kali.vm.provision "shell", inline: 'su vagrant -l -c \'export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus" && xfconf-query -n -t "bool" -c xfce4-session -p /general/PromptOnLogout -s false\''
     # Special provision for MOTD
-    kali.vm.provision "shell", inline: 'echo -e "Welcome, student!\nYou have obtained the credentials tunnel:tunnel for 192.168.31.1, which is accessible via ssh. Your objective is to create a tunnel through 192.168.31.1 that connects to a host on the neighboring .32 subnet. That host is running a netcat service that you should connect to."'
+    kali.vm.provision "shell", inline: 'echo -e "Welcome, student!\nYou have obtained the credentials tunnel:tunnel for 192.168.31.1, which is accessible via ssh.\nYour objective is to create a tunnel through 192.168.31.1 that connects to a host on the neighboring .32 subnet.\nThat host is running a netcat service that you should connect to."'
 	# Change network card to PCnet-FAST III
 	# Ref: https://releases.hashicorp.com/vagrant/2.2.9/vagrant_2.2.9_x86_64.deb
 	
