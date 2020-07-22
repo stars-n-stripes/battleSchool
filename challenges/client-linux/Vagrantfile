@@ -1,0 +1,59 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  # === PROVIDER PRIORITIES ===
+  # Here, we define TWO providers - the VirtualBox one and the Docker one.
+  #config.vm.provider "virtualbox"
+
+
+
+  # ===STUDENT BOX===
+  # You may alter this box's configs, but do NOT change the SSH port forward nor the name of the box
+  config.vm.define "kali" do |kali|
+	kali.vm.box = "kalilinux/rolling"
+	# kali.vm.network  "private_network", type: "dhcp", name: "vboxnet0"
+	# kali.vm.network "private_network", ip: "192.168.33.3", virtualbox__intnet: true
+	# Enable SSH forwarding of the X session
+	kali.vm.network "private_network", ip: "192.168.33.3"
+	# Also, force the SSH session to a high port to avoid Vagrant conflicts
+	kali.ssh.forward_x11 = true
+	kali.vm.network "forwarded_port", guest: 22, host: 8507
+	kali.vm.provision "shell", inline:  'sed -i /usr/share/polkit-1/actions/org.freedesktop.color.policy -e "s/<allow_inactive>no<\/allow_inactive>/<allow_inactive>yes<\/allow_inactive>/gm; s/<allow_any>auth_admin<\/allow_any>/<allow_any>yes<\/allow_any>/gm"'
+	# This will allow X GUI apps to run in the context of root
+	kali.vm.provision "shell", inline: 'mkdir /home/vagrant/bin;  wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/build/xsudo.sh -O /home/vagrant/bin/xsudo.sh && chmod +x /home/vagrant/bin/xsudo.sh && echo alias sudo="/home/vagrant/bin/xsudo.sh" > /home/vagrant/.bash_aliases'
+	# Disable logout prompt, minimizing the risk of session save shennanigans
+	# TODO: Replace this command with one that will work without anyone being logged in to an XFCE session
+	# Reference for xfconf: https://docs.xfce.org/xfce/xfconf/xfconf-query
+	# Reference for dbus madness: https://bbs.archlinux.org/viewtopic.php?id=228599
+	 kali.vm.provision "shell", inline: 'su vagrant -l -c \'export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus" && xfconf-query -n -t "bool" -c xfce4-session -p /general/PromptOnLogout -s false\''
+
+	# Debug until we get the student side working
+	kali.vm.provider "virtualbox" do |v|
+		v.gui = false
+	end
+    	# The following code resets networking, which is required for Kali to accept a new internal network IP
+		kali.trigger.after :up do |t|
+		t.info = "Restarting networking service so static IP assignment can take effect..."
+		t.run_remote = {inline: "service network-manager restart"}
+	end
+  end
+  # ===END STUDENT BOX===
+
+config.vm.define "vulnbox" do |vuln|
+    vuln.vm.box = "bento/ubuntu-18.04"
+    # Create a user with admin:admin credentials and a shell of /bin/bash
+    vuln.vm.provision "shell", inline: 'useradd -s /bin/bash -m -U admin && echo -e "admin\nadmin" | passwd admin'
+    vuln.vm.network "private_network", ip: "192.168.33.2", virtualbox__intnet: true
+
+end

@@ -77,7 +77,7 @@ end
   # ===END STUDENT BOX===
 
 config.vm.define "vulnbox" do |vuln|
-# Since this is an IDS demonstration, we'll use a target box with all defensive capabilities of burning cardboard
+# Since this is an IDS demonstration, we'll use a target box with all defenstyive capabilities of burning cardboard
 # vuln.vm.box = "rapid7/metasploitable3-ub1404"
 vuln.vm.box = "bento/ubuntu-18.04"
 vuln.vm.network "private_network", ip: "192.168.32.2", virtualbox__intnet: "victim"
