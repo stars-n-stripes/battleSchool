@@ -60,7 +60,6 @@ vagrant init
 # Note: Vagrant hates us if we attempt vagrant init after we've already downloaded the Vagrantfile, so that's why we do it after grabbing scenario.ini
 wget https://raw.githubusercontent.com/stars-n-stripes/battleSchool/master/challenges/$1/Vagrantfile -O Vagrantfile
 vagrant up --no-destroy-on-error  &> /tmp/scenario_build.log
-vagrant_result=$?
 
 ENDSU
 
