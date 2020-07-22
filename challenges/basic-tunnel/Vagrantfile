@@ -83,7 +83,7 @@ vuln.vm.box = "bento/ubuntu-18.04"
 vuln.vm.network "private_network", ip: "192.168.32.2", virtualbox__intnet: "victim"
 # Specific to this scenario; set router-ids as the default gateway
 # vuln.vm.provision "shell", run: "always", inline: "route add default gw 192.168.32.1"	
-vuln.vm.provision "shell", run: "always", inline: " nc -k -l 8507 <<< 'Congratulations! You did it.'"
+vuln.vm.provision "shell", run: "always", inline: " nc -k -l 8507 <<< 'Congratulations! You did it.' &"
 
 end
   
