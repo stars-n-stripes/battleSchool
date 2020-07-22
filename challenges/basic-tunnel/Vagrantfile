@@ -79,7 +79,7 @@ end
 config.vm.define "vulnbox" do |vuln|
 # Since this is an IDS demonstration, we'll use a target box with all defensive capabilities of burning cardboard
 # vuln.vm.box = "rapid7/metasploitable3-ub1404"
-tunnel.vm.box = "bento/ubuntu-18.04"
+vuln.vm.box = "bento/ubuntu-18.04"
 vuln.vm.network "private_network", ip: "192.168.32.2", virtualbox__intnet: "victim"
 # Specific to this scenario; set router-ids as the default gateway
 # vuln.vm.provision "shell", run: "always", inline: "route add default gw 192.168.32.1"	
